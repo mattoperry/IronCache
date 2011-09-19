@@ -256,7 +256,7 @@ class Ironcache_ext
 						
 		foreach ($configs as $config) 
 		{
-			$t = explode('|', trim($config));
+			$t = explode('||', trim($config));
 			
 			//if the URI pattern of the config line is empty, it's referring to the homepage.
 			if ($t[0]=='')
