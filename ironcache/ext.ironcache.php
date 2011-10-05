@@ -88,8 +88,9 @@ class Ironcache_ext
 		$this->prefix = ($this->settings['prefix']) ? $this->settings['prefix'].'_' : '';
         
         //build the keys for the count, page and flag
-        $key_base = $this->prefix . $this->uri_key;
-        $this->key_count = $key_base . '_c';
+		$site_id = $this->EE->config->item('site_id') . '_';
+		$key_base = $this->prefix . $site_id . $this->uri_key;        
+		$this->key_count = $key_base . '_c';
         $this->key_page = $key_base . '_p';
         $this->key_flag = $key_base . '_f';
 	}
