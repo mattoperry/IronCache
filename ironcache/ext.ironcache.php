@@ -78,7 +78,7 @@ class Ironcache_ext
 		$this->EE->lang->loadfile('ironcache');
 		
 		//get the URI
-	    $this->uri	= ltrim($this->EE->uri->uri_string,'/');
+    $this->uri	= ltrim($_SERVER['REQUEST_URI'],'/');
 	    $this->uri_key	= md5($this->uri);
 
         //parse caching configuration, and while we're at it determine whether we should be cacheing the current request
