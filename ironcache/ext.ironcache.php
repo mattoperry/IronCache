@@ -269,7 +269,7 @@ class Ironcache_ext
 				}
 			}
 			
-			elseif(preg_match('/' . $t[0] . '/', $this->uri))
+			elseif(preg_match('#' . $t[0] . '#', $this->uri))
 			{
 				$this->cacheable = true;
 			}
