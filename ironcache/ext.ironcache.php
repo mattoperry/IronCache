@@ -78,7 +78,7 @@ class Ironcache_ext
 		$this->EE->lang->loadfile('ironcache');
 		
 		//get the URI
-	    $this->uri	= ltrim($this->EE->uri->uri_string,'/');
+    $this->uri	= ltrim($_SERVER['REQUEST_URI'],'/');
 	    $this->uri_key	= md5($this->uri);
 
         //parse caching configuration, and while we're at it determine whether we should be cacheing the current request
@@ -189,6 +189,7 @@ class Ironcache_ext
             
        	//see if we have valid page in cache already
         $page = $this->_get_from_cache($this->key_page);
+        $type = $this->_get_from_cache($this->key_page . '_type');
                      
        	if (!$page) 
        	{
@@ -212,7 +213,7 @@ class Ironcache_ext
        	
        	//ah, so we do have a valid page from the cache to show.  Let's output it now.
 	    
-		$this->_show_page($page);
+      $this->_show_page($page, $type);
 		
 	}
 
@@ -361,8 +362,8 @@ class Ironcache_ext
 	{		            
         //finally connect to and set the cache
         $C = $this->_connect_to_cache(); 
-        $result = $C->set($this->key_page,$out->o,0,$this->cache_time);
-        return $result;
+        $C->set($this->key_page, $out->o, 0, $this->cache_time);
+        $C->set($this->key_page . '_type', $out->out_type, 0, $this->cache_time);
 	}
 	
 	
@@ -370,13 +371,32 @@ class Ironcache_ext
 	*	Ironcache _show_page($page)
 	**/
 	
-	private function _show_page($page) 
+  private function _show_page($page, $type) 
 	{
 		@header("HTTP/1.1 200 OK", TRUE, 200);
         @header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
         @header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
         @header("Pragma: no-cache");
 	    @header('X-Ironcache: true');
+	    
+	    switch ($type)
+      {
+        case 'webpage':
+          @header("Content-Type: text/html");
+          break;
+        case 'css':
+          @header("Content-type: text/css");
+          break;
+        case 'js':
+          @header("Content-type: text/javascript");
+          break;
+        case '404':
+          @header(404);
+          break;
+        case 'xml':
+          @header("Content-Type: text/xml");
+          break;
+      }
             
 	    // uncomment this to get visual indication that caching is working - otherwise look for X-Ironcache header
 	    //echo "THIS PAGE IS CACHED";
